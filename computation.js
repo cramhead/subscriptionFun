@@ -24,9 +24,11 @@ if (Meteor.isServer) {
         console.log("publishing");
     });
 
-    Meteor.publish('specificItems', function(params){
-      return Items.find({index: params});
-      console.log("publishing specificItems");
+    Meteor.publish('specificItems', function(params) {
+        return Items.find({
+            index: params
+        });
+        console.log("publishing specificItems");
     });
 
     // Facts.setUserIdFilter(function(userId) {
@@ -36,19 +38,58 @@ if (Meteor.isServer) {
 
 if (Meteor.isClient) {
 
-  var firstParam = 8;
-  var secondParam = 9;
-    Template.hello.item = Items.find({index: firstParam});
 
-    Template.item.item = Items.find({index: secondParam});
+
+    var firstParam = 8;
+    var secondParam = 9;
+
+    var queryHello = Items.find({
+        index: firstParam
+    });
+    var queryItem = Items.find({
+        index: secondParam
+    });
+
+    queryHello.observeChanges({
+      added: function (id, fields) {
+        console.log("hello added");
+      },
+      changed: function (id, fields) {
+        console.log("hello changed");
+      },
+      movedBefore: function (id, fields) {
+        console.log("hello movedBefore");
+      },
+      removed: function (id) {
+        console.log("hello removed");
+      }
+    });
+
+    queryItem.observeChanges({
+      added: function (id, fields) {
+        console.log("queryItem added");
+      },
+      changed: function (id, fields) {
+        console.log("queryItem changed");
+      },
+      movedBefore: function (id, fields) {
+        console.log("queryItem movedBefore");
+      },
+      removed: function (id) {
+        console.log("queryItem removed");
+      }
+    });
+    Template.hello.item = queryHello;
+
+    Template.item.item = queryItem;
 
     //computation = Deps.autorun(function() {
-        Meteor.subscribe('specificItems', firstParam);
-        console.log("computation run");
+    Meteor.subscribe('specificItems', firstParam);
+    console.log("computation run");
     //});
 
-    doSubscribe = function(){
-      Meteor.subscribe('specificItems', secondParam);
+    doSubscribe = function() {
+        Meteor.subscribe('specificItems', secondParam);
     };
 
     // doInvalidation = function() {
