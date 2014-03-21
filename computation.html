@@ -1,0 +1,37 @@
+<head>
+    <title>computation</title>
+</head>
+
+<body>
+    {{> hello}}
+
+    {{> item}}
+</body>
+
+<template name="hello">
+    <h1>Hello World!</h1>
+    <ul>
+        {{#each item}}
+        <li></li>
+        {{name}} {{else}}
+        <li>No items</li>
+        {{/each}}
+    </ul>   
+
+</template>
+
+<template name="item">
+	<h2>Specifial Items</h2>
+	<ul>
+        {{#each item}}
+        <li></li>
+        {{name}} {{else}}
+        <li>No items</li>
+        {{/each}}
+    </ul>   
+
+</template>
+
+<template name="main">
+	<h2>server Facts</h2>
+</template>
