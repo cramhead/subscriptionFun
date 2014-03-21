@@ -26,6 +26,7 @@ if (Meteor.isServer) {
 
     Meteor.publish('specificItems', function(params){
       return Items.find({index: params});
+      console.log("publishing specificItems");
     });
 
     // Facts.setUserIdFilter(function(userId) {
@@ -35,32 +36,34 @@ if (Meteor.isServer) {
 
 if (Meteor.isClient) {
 
-    Template.hello.item = Items.find();
+  var firstParam = 8;
+  var secondParam = 9;
+    Template.hello.item = Items.find({index: firstParam});
 
-    Template.item.item = Items.find();
+    Template.item.item = Items.find({index: secondParam});
 
-    computation = Deps.autorun(function() {
-        Meteor.subscribe('items');
+    //computation = Deps.autorun(function() {
+        Meteor.subscribe('specificItems', firstParam);
         console.log("computation run");
-    });
+    //});
 
     doSubscribe = function(){
-      Meteor.subscribe('items', 9);
+      Meteor.subscribe('specificItems', secondParam);
     };
 
-    doInvalidation = function() {
-        computation.invalidate();
-        console.log('computation is invalid');
+    // doInvalidation = function() {
+    //     computation.invalidate();
+    //     console.log('computation is invalid');
 
-        Deps.flush();
-        console.log('flush is complete');
+    //     Deps.flush();
+    //     console.log('flush is complete');
 
-    }
+    // }
 
-    doStop = function() {
-        computation.stop();
-        console.log('computation is stopped');
-        Deps.flush();
-        console.log('flush is complete');
-    }
+    // doStop = function() {
+    //     computation.stop();
+    //     console.log('computation is stopped');
+    //     Deps.flush();
+    //     console.log('flush is complete');
+    // }
 }
