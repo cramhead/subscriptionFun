@@ -25,86 +25,71 @@ if (Meteor.isServer) {
     });
 
     Meteor.publish('specificItems', function(params) {
+        console.log(EJSON.stringify(params));
         return Items.find({
             index: params
         });
         console.log("publishing specificItems");
     });
 
-    // Facts.setUserIdFilter(function(userId) {
-    //     return true;
-    // });
 }
 
 if (Meteor.isClient) {
 
-
-
     var firstParam = 8;
     var secondParam = 9;
 
-    var queryHello = Items.find({
-        index: firstParam
-    });
-    var queryItem = Items.find({
-        index: secondParam
-    });
-
-    queryHello.observeChanges({
-      added: function (id, fields) {
-        console.log("hello added");
-      },
-      changed: function (id, fields) {
-        console.log("hello changed");
-      },
-      movedBefore: function (id, fields) {
-        console.log("hello movedBefore");
-      },
-      removed: function (id) {
-        console.log("hello removed");
-      }
-    });
-
-    queryItem.observeChanges({
-      added: function (id, fields) {
-        console.log("queryItem added");
-      },
-      changed: function (id, fields) {
-        console.log("queryItem changed");
-      },
-      movedBefore: function (id, fields) {
-        console.log("queryItem movedBefore");
-      },
-      removed: function (id) {
-        console.log("queryItem removed");
-      }
-    });
-    Template.hello.item = queryHello;
-
-    Template.item.item = queryItem;
-
-    //computation = Deps.autorun(function() {
-    Meteor.subscribe('specificItems', firstParam);
-    console.log("computation run");
-    //});
-
-    doSubscribe = function() {
-        Meteor.subscribe('specificItems', secondParam);
+    var query = function(param) {
+        return Items.find({
+            index: param
+        });
     };
 
-    // doInvalidation = function() {
-    //     computation.invalidate();
-    //     console.log('computation is invalid');
+    // var queryItem = Items.find({
+    //     index: secondParam
+    // });
 
-    //     Deps.flush();
-    //     console.log('flush is complete');
+    // queryHello.observeChanges({
+    //   added: function (id, fields) {
+    //     console.log("hello added");
+    //   },
+    //   changed: function (id, fields) {
+    //     console.log("hello changed");
+    //   },
+    //   movedBefore: function (id, fields) {
+    //     console.log("hello movedBefore");
+    //   },
+    //   removed: function (id) {
+    //     console.log("hello removed");
+    //   }
+    // });
 
-    // }
+    // queryItem.observeChanges({
+    //   added: function (id, fields) {
+    //     console.log("queryItem added");
+    //   },
+    //   changed: function (id, fields) {
+    //     console.log("queryItem changed");
+    //   },
+    //   movedBefore: function (id, fields) {
+    //     console.log("queryItem movedBefore");
+    //   },
+    //   removed: function (id) {
+    //     console.log("queryItem removed");
+    //   }
+    // });
 
-    // doStop = function() {
-    //     computation.stop();
-    //     console.log('computation is stopped');
-    //     Deps.flush();
-    //     console.log('flush is complete');
-    // }
+    Template.hello.item = query(firstParam);
+
+    Template.item.item = query(secondParam);
+
+    computation = Deps.autorun(function() {
+        Meteor.subscribe('specificItems', firstParam);
+        console.log("computation run");
+    });
+
+    doSubscribe = function() {
+
+        Meteor.subscribe('specificItems', secondParam);
+    };
 }
